@@ -1,9 +1,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <limits>
-
 
 // ToDo: Exercise 1.d - adapt and implement combinations
 
@@ -35,9 +32,6 @@ int main(int argc, char* argv[])
 		return 1; // invalid number of parameters
 
 	int n = std::stoi(argv[1]);
-
-	std::cout << sizeof(u_long) << std::endl;
-	std::cout << std::numeric_limits<u_long>().max() << std::endl;
 
 	std::cout << combinations(n) << std::endl;
 

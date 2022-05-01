@@ -1,3 +1,17 @@
 <zahl> ::= ("0" | ([1-9] ([0-9]+)?) ("," [0-9]+)?) | "pi" | "e" | ("M" [0-9])
 <operator> ::= "\\" | "*" | "+" | "- " | "^" | "%"
-<vollterm> ::= (<vollterm> ((<operator> <vollterm>)* | ("-> M" [0-9] (<operator> <vollterm>)?))) | <zahl> | ("(" <vollterm> ")") | ("round(" <vollterm> ")")
+<vollterm> ::= (<vollterm> ((<operator> <vollterm>)* | (<vollterm> "-> M" [0-9] (<operator> <vollterm>)?))) | <zahl> | ("(" <vollterm> ")") | ("round(" <vollterm> ")")
+
+
+################################################################
+
+<zahl> ::= ("0" | ([1-9] ([0-9]+)?) ("," [0-9]+)?) | "pi" | "e" | ("M" [0-9])
+<operator> ::= "\\" | "*" | "+" | "- " | "^" | "%"
+
+<round> ::= "round(" <exp> ")"
+
+<klammern> ::= "(" <exp> ")"
+
+<store> ::=  <exp> "->" "M" [0-9] (<operator> <exp>)?
+
+<exp> ::= (<zahl> (<operator> <zahl>)*)? | <klammern> | <zahl> | <store>
