@@ -32,3 +32,18 @@
 <thing> ::= (<zahl> | <klammern> | <store>)
 
 <exp> ::= (<thing> (<operator> <thing>)*)? | <klammern> | <zahl> | <store>
+
+################################################### die untere sollte passen
+
+<zahl> ::= ("-")? ("0" | ([1-9] ([0-9]+)?) ("," [0-9]+)?) | "pi" | "e" | ("M" [0-9])
+<operator> ::= "/" | "*" | "+" | "-" | "^" | "%"
+
+<round> ::= "round(" <exp> ")"
+
+<klammern> ::= "(" <exp> ")"
+
+<store> ::=  <exp> "->" "M" [0-9] (<operator> <exp>)?
+
+<thing> ::= (<zahl> | <klammern> | <store> | <round>)
+
+<exp> ::= (<thing> (<operator> <thing>)*)
