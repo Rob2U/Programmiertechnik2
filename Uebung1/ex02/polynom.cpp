@@ -3,10 +3,10 @@
 #include <vector>
 #include <math.h>
 
-long double polynom(std::vector<double>* vector, int n, double x)
+double polynom(std::vector<double>* vector, int n, double x)
 {
 	long double sum = 0;
-	for (int i = 0; i <= n; i++)
+	for (int i = 0; i < n+1; i++)
 	{
 		sum += vector->at(i)* std::pow(x,i);
 	}
@@ -36,42 +36,49 @@ void prettyPrint(double decimal)
 	}
 	ret_string = ret_string.append(tmpstring.substr(idx_point,tmpstring.length()));
 
+	int idx = ret_string.length()-1;
+
+	while (ret_string.at(idx) == '0'){
+		ret_string.pop_back();
+		idx--;
+	}
+
+	if (ret_string.at(idx) == ','){
+		ret_string.pop_back();
+	}
+
 	std::cout<< ret_string << std::endl;
 }
 
 int main(int argc, char* argv[])
 {
-	if (argc <= 3)		return 1; // invalid number of parameters
-
-	double x = std::stod(argv[1]);
-	int n = std::stoi(argv[2]);
-
-	if (x < 0 || n < 0)	return 1; // invalid arguments
-
-	std::vector<double> coefficients;
-
-	try
-	{
-		for (int i = 3; i < argc; i++)
-		{
-			coefficients.push_back(std::stod(argv[i]));
-		}
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		return 1;
-	}
-
-
 
 	// ToDo: Exercise 2.a - read parameters and x, deal with invalid values
 
+	if (argc <= 2)	return 0; // invalid number of parameters
+
+	double x = std::stod(argv[1]);
+	std::cout << "x = " << x << std::endl;
+	int n = std::stoi(argv[2]);
+	std::cout << "n = " << n << std::endl;
+
+	if (n < 0) return 0; // invalid arguments
+
+	std::vector<double> coefficients;
+
+	if (n <= argc-3) {
+		for (int i = 3; i <= n+3; i++) {
+			//std::cerr << "coefficient " << i-2 << " = " << argv[i] << std::endl;
+			coefficients.push_back(std::stod(argv[i]));
+		}
+	} else {
+		return 0; // invalid number of coefficients
+	}
+
 	// ToDo: Exercise 2.b - print P(x)
+	//std::cout << polynom(&coefficients, n, x) << std::endl;
+
 	// ToDo: Exercise 2.c - print P(x) with prettyPrint
-
-	std::cout << polynom(&coefficients, n, x) << std::endl << std::endl;
-
 	prettyPrint(polynom(&coefficients, n, x));
 
 	return 0;

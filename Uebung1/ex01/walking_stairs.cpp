@@ -26,6 +26,7 @@ u_long combinations(int n)
 	}
 }
 
+//Beachte u_long hat eine Groesse von 64 Bit (auf einem ^4-bit System), was hier ausreichend groß ist, aber bei größeren Werten problematisch weren kann.
 int main(int argc, char* argv[])
 {
 	if (argc != 2)

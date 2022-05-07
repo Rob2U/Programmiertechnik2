@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 
 	// ToDo: Exercise 1.c - print calculation steps
 
-	std::cout << n << " : " << fibonacci(n) << " : " <<  count_of_sums << std::endl;
+	std::cout << n << " : " << fibonacci(n) << " : #" <<  count_of_sums << std::endl;
 
 	return 0;
 }

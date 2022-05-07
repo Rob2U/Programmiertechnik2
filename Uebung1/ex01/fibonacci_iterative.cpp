@@ -17,10 +17,10 @@ int fibonacci(int n)
     } else if (n == 1) {
         return 1;
     } else {
-        int a = 0;
+        int a = 1;
         int b = 1;
-        int c = 0;
-        for (int i = 2; i <= n; i++) {
+        int c = 1;
+        for (int i = 3; i <= n; i++) {
 			count_of_steps++;
             c = a + b;
             a = b;
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
 	// ToDo: Exercise 1.c - print calculation steps
 
-	std::cout << n << " : " << fibonacci(n) << " : " <<  count_of_steps << std::endl;
+	std::cout << n << " : " << fibonacci(n) << " : #" <<  count_of_steps << std::endl;
 
 	return 0;
 }
