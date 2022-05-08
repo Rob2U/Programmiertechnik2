@@ -32,16 +32,32 @@ int fibonacci(int n)
 	return 0;
 }
 
+int parseAsInt(char* str, int& result){
+	try
+	{
+		result = std::stoi(str);
+		return 0;
+	}
+	catch(const std::exception& e)
+	{
+		return -1;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc != 2)
 		return 1; // invalid number of parameters
 
-	int n = std::stoi(argv[1]);
+	int n;
+    if (parseAsInt(argv[1], n)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	} 
 
 	// ToDo: Exercise 1.c - print calculation steps
-
-	std::cout << n << " : " << fibonacci(n) << " : #" <<  count_of_steps << std::endl;
+	int fib = fibonacci(n);
+	std::cout << n << " : " << fib << " : #" <<  count_of_steps << std::endl;
 
 	return 0;
 }

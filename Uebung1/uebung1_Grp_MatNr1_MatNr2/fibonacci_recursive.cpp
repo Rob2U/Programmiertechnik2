@@ -2,7 +2,9 @@
 #include <iostream>
 #include <string>
 
-int count_of_sums = 0;
+int parseAsInt(char*, int&);
+
+int count_of_steps = 0;
 
 int fibonacci(int n)
 {
@@ -13,12 +15,12 @@ int fibonacci(int n)
 	// ToDo: Exercise 1.a - retrieve nth fibonacci number recursively
 
 	if (n <= 0) {
-        return 1;
+        return 0;
     } else if (n == 1 || n == 2) {
-        count_of_sums++;
+        count_of_steps++;
         return 1;
     } else {
-        count_of_sums++;
+        count_of_steps++;
         return fibonacci(n - 1) + fibonacci(n - 2);
     }
 
@@ -30,11 +32,28 @@ int main(int argc, char* argv[])
 	if (argc != 2)
 		return 1; // invalid number of parameters
 
-	int n = std::stoi(argv[1]);
+	int n;
+	if (parseAsInt(argv[1], n)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	} 
 
 	// ToDo: Exercise 1.c - print calculation steps
-
-	std::cout << n << " : " << fibonacci(n) << " : #" <<  count_of_sums << std::endl;
+	int fib = fibonacci(n);
+	std::cout << n << " : " << fib << " : #" <<  count_of_steps << std::endl;
 
 	return 0;
+}
+
+
+int parseAsInt(char* str, int& result){
+	try
+	{
+		result = std::stoi(str);
+		return 0;
+	}
+	catch(const std::exception& e)
+	{
+		return -1;
+	}
 }

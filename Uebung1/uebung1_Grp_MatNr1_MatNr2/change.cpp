@@ -8,6 +8,16 @@ void change(const int due, const int paid, std::ostream& out)
 	// ToDo: compute and write set of change tuples to output stream
 	int left = paid - due;
 
+	if (left < 0) {
+		out << "Insufficient payment" << std::endl;
+		return;
+	}
+
+	if (left == 0) {
+		out << "No change" << std::endl;
+		return;
+	}
+
 	while (left != 0)
 	{
 		if (left >= 5000)
@@ -61,6 +71,18 @@ void change(const int due, const int paid, std::ostream& out)
 	
 }
 
+int parseAsInt(char* str, int& result){
+	try
+	{
+		result = std::stoi(str);
+		return 0;
+	}
+	catch(const std::exception& e)
+	{
+		return -1;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc != 3 && argc != 5){
@@ -68,8 +90,24 @@ int main(int argc, char* argv[])
 		return 1; // invalid number of parameters
 	}
 
-	int due = std::stoi(argv[2]);
-	int paid = std::stoi(argv[1]);
+	int due;
+	if (parseAsInt(argv[1], due)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	}
+
+
+	int paid;
+	if (parseAsInt(argv[2], paid)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	}
+
+	if (paid < 0 || due < 0) {
+		std::cerr << "Negative numbers are not allowed!" << std::endl;
+		return -1; // invalid parameter
+	}
+	
 
 	try {
 		if (argc==5 && argv[3]==std::string("-o"))
@@ -78,7 +116,10 @@ int main(int argc, char* argv[])
 
 			change(due, paid, out);
 		}
-		else
+		else if (argc==5 && argv[3]!=std::string("-o"))
+		{
+			std::cerr << "Usage: " << argv[0] << " <due> <paid> [ -o <output-file>]\n";
+		} else		
 		{
 			change(due, paid, std::cout);
 		}

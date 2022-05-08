@@ -1,0 +1,25 @@
+a)
+
+<zahl> ::= ("-")? ("0" | ([1-9] ([0-9]+)?) ("," [0-9]+)?) | "pi" | "e" | ("M" [0-9])
+<operator> ::= "/" | "*" | "+" | "-" | "^" | "%"
+
+<round> ::= "round(" <exp> ")"
+
+<klammern> ::= "(" <exp> ")"
+
+<store> ::=  <exp> "->" "M" [0-9] (<operator> <exp>)?
+
+<thing> ::= (<zahl> | <klammern> | <store> | <round>)
+
+<exp> ::= (<thing> (<operator> <thing>)*)
+
+
+b)
+
+(4+(-3)-4,2342*(-6,3433)/42^2)*(e%round(pi)->M4*23)+(M3/9)*(2)
+
+
+c)
+
+")52(" ist bei uns ungültig, da eine öffnende vor einer schließenden Klammer falsch ist.
+"4%*3" ist bei uns ungültig, da keine zwei binären Rechenoperatoren hintereinander sinnvoll sind.

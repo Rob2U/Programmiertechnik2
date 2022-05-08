@@ -29,7 +29,7 @@ void prettyPrint(double decimal)
 
 	while ((c = tmpstring.at(i))!= '\0' && c != ',')
 	{
-		if ((idx_point-i)%3 == 0 && i != 0){
+		if ((idx_point-i)%3 == 0 && i != 0 && ret_string.at(i-1)!='-'){
 			ret_string = ret_string.append(".");
 		}
 		ret_string += tmpstring.at(i++);
@@ -50,28 +50,78 @@ void prettyPrint(double decimal)
 	std::cout<< ret_string << std::endl;
 }
 
+int parseAsInt(char* str, int& result){
+	try
+	{
+		result = std::stoi(str);
+		return 0;
+	}
+	catch(const std::exception& e)
+	{
+		return -1;
+	}
+}
+
+int parseAsDouble(char* str, double& result){
+	try
+	{
+		result = std::stod(str);
+		return 0;
+	}
+	catch(const std::exception& e)
+	{
+		return -1;
+	}
+}
+
+
+
 int main(int argc, char* argv[])
 {
 
 	// ToDo: Exercise 2.a - read parameters and x, deal with invalid values
 
-	if (argc <= 2)	return 0; // invalid number of parameters
+	if (argc <= 2){	
+		std::cout << "Usage: " << argv[0] << " <x> <polynom degreee (n)> <factor 0> ... <factor n>" << std::endl;
+		return 0; // invalid number of parameters
+	}
 
-	double x = std::stod(argv[1]);
-	std::cout << "x = " << x << std::endl;
-	int n = std::stoi(argv[2]);
-	std::cout << "n = " << n << std::endl;
+	double x;
+	if (parseAsDouble(argv[1], x)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	}
+	//std::cout << "x = " << x << std::endl;
 
-	if (n < 0) return 0; // invalid arguments
+
+
+	int n;
+	if (parseAsInt(argv[2], n)) {
+		std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+		return -1; // invalid parameter
+	} 
+	//std::cout << "n = " << n << std::endl;
+
+	if (n < 0){ 
+		std::cerr << "polynom degree must be greater than 0!" << std::endl;
+		return 0; // invalid arguments
+	}
 
 	std::vector<double> coefficients;
 
-	if (n <= argc-3) {
+	double val;
+	if (n == argc-4) {
 		for (int i = 3; i <= n+3; i++) {
 			//std::cerr << "coefficient " << i-2 << " = " << argv[i] << std::endl;
-			coefficients.push_back(std::stod(argv[i]));
+			
+			if (parseAsDouble(argv[i], val)) {
+				std::cerr << "Text was given instead of number (as parameter)!" << std::endl;
+				return -1; // invalid parameter
+			}
+			coefficients.push_back(val);
 		}
 	} else {
+		std::cout << "Usage: " << argv[0] << " <x> <polynom degreee (n)> <factor 0> ... <factor n>" << std::endl;
 		return 0; // invalid number of coefficients
 	}
 
