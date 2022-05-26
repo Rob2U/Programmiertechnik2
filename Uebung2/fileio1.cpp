@@ -8,8 +8,8 @@ int modulo(const std::string& a, int b)
 {
 	// Function to compute a (mod b)
 	// YOUR CODE goes here. Don't forget to answer the question in a comment
-	// Das Problem bei der Berechnung von modulo auf der IBAN ist, dass die durch Umwandlung in eine natürliche Zahl entstehende Zahl zu gross wäre, um die Zahl in einem Datentyp zu speichern.
-	// Daher wird die Zahl in einen String umgewandelt, damit wird schriftliche Division mit rest durchgeführt und dieser Rest ist dann die entstehende Prüfziffer.
+	// das Problem bei der Berechnung von modulo auf der IBAN ist, dass die durch Umwandlung in eine natuerliche Zahl entstehende Zahl zu gross waere um die Zahl in einem datntyp zu speichern.
+	// Daher wird die Zahl in einen String umgewandelt, damit wird schriftliche Division mit rest durchgefuehrt und dieser Rest ist dann die entstehende Pruefziffer.
 
 	//calculate the modulo of a and b on the basis of the string a
 	std::stringstream ss;
@@ -17,7 +17,8 @@ int modulo(const std::string& a, int b)
 	int currentVal = 0;
 	std::string current = "0";
 
-	while (current += ss.get(), !ss.eof()){
+	while (current += ss.get(), !ss.eof())
+	{
 		currentVal = std::stoi(current);
 		current = std::to_string(currentVal%b);
 	}
@@ -40,7 +41,7 @@ bool isCheckDigitCorrect(const std::string& testString)
 	//std::cerr << "Test" << std::endl;
 
 	//std::cout << "Prüfziffer: \t" << checkDigits << "\t Prüfbuchstaben\t" << checkNumbers << std::endl;
-	return (moduloRes%100 == checkDigits);
+	return (moduloRes%100 == checkDigits) ? true : false;
 }
 
 bool isValueCorrect(const std::string& teststring, const int& column)
@@ -57,7 +58,7 @@ bool isValueCorrect(const std::string& teststring, const int& column)
 
 		case 2:
 			//regExp.assign("^[A-Z][A-Z]([A-Z]|[0-9]){16,35}( )*$");
-			regExp.assign("[A-Z][A-Z][A-Z0-9]{16,32}( )*"); //müsste nicht egtl [A-Z][A-Z][0-9]{16,32}('\'s)*?
+			regExp.assign("[A-Z][A-Z][A-Z0-9]{16,32}( )*");
 			
 			return std::regex_match(teststring, regExp);
 			return true;
@@ -113,7 +114,8 @@ void readTokensAndLines(char* path)
 				break;
 			case 2:
 				//std::cout << "IBAN: " << curattr << std::endl;
-				if (!isValueCorrect(curattr.substr(0,curattr.length()-1), counter)){
+				if (!isValueCorrect(curattr.substr(0,curattr.length()-1), counter))
+				{
 					clearLine = true;
 					error+=4;
 				}
