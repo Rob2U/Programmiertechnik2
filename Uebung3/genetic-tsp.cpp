@@ -103,15 +103,36 @@ bool validTour(const Tour& tour)
 }
 
 // TODO 3.3a: returns distance between two cities based on the distance table
-int cityDistance(int city1, int city2)
-{
-	return 0;
+int cityDistance(int city1, int city2) {
+	assert(city1 != city2);
+	assert(0 <= city1 && city1 < N);
+	assert(0 <= city2 && city2 < N);
+	
+	return distanceTable[city1][city2];
 }
 
 // TODO 3.3b: calculate the length for a given tour, assuming a round trip
-int tourLength(const Tour& tour)
-{
-	return 0;
+int tourLength(const Tour& tour) {
+	int length = 0;
+
+	assert(validTour(tour));
+	assert(tourDefined(tour));
+
+	int predecessor = tour[0];
+	for (int i = 1; i < tour.size(); i++){
+		
+		int currentcity = tour.at(i);
+		int distance = cityDistance(predecessor, currentcity);
+		length += distance;
+
+		if (minDist > distance)
+			minDist = distance;
+		if (maxDist < distance)
+			maxDist = distance;
+
+		predecessor = currentcity;
+	}
+	return length;
 }
 
 //  print city names of a tour
@@ -138,8 +159,23 @@ void printTours(const std::vector<Tour>& tourList)
 }
 
 // TODO 3.3c: inserts a city in an incomplete tour, using the next free slot
-void insertCity(Tour& tour, int city)
-{}
+void insertCity(Tour& tour, int city){
+	assert(0 <= city && city < N);
+	
+	//find next free slot
+	for (int i = 0; i < tour.size(); i++) {
+		if (tour[i] == -1) {
+			//std::cerr << "Empty space found for city " << city << std::endl;
+			//std::cerr.flush();
+			tour[i] = city;
+			return;
+		}
+	}
+	
+	//if no free slot found, be sad :(
+	//std::cerr << "No free slot found for city " << city << std::endl;
+	exit(1);
+}
 
 // Generate the tours as initial population and store them in the tour set.
 std::vector<Tour> generateTours()
@@ -164,10 +200,37 @@ std::vector<Tour> generateTours()
 // TODO 3.3d: Take two (good) parent tours, and build a new one by the gens of both.
 //            Hint: Use uniform_int_distribution (in combination with randomNumberEngine()), findCity and
 //            insertCity.
-Tour crossover(const Tour& parent1, const Tour& parent2)
-{
+Tour crossover(const Tour& parent1, const Tour& parent2) {
 	Tour child;
-	// ...
+	for (auto& elem : child) {
+		elem = -1;
+	}
+	// merge parent1 and parent2 into child
+	int random = std::uniform_int_distribution<int>(0, N-5)(randomNumberEngine());
+	
+	//insert 5 cities from parent1
+	for (int i = random; i <= random+4; i++) {
+		insertCity(child, parent1[i]);
+		//std::cerr << "Inserted city " << parent1[i] << " from parent1" << std::endl;
+	}
+
+	//print tour
+	for (auto city : child) {
+		//std::cerr << city << " ";
+	}
+	//std::cerr << std::endl;
+	//                        .flush();
+	
+
+
+	//insert missing cities from parent2
+	for (int city : parent2) {
+		if (!findCity(child, city)) {
+			//std::cerr << "City " << city << " not found in child" << std::endl;
+			//std::cerr.flush();
+			insertCity(child, city);
+		}
+	}	
 
 	assert(tourDefined(child)); // check for undefined city indices
 	assert(validTour(child)); // check that each city is defined only once
@@ -175,12 +238,24 @@ Tour crossover(const Tour& parent1, const Tour& parent2)
 	return child;
 }
 
+bool rand_bool_with_prob (float prob) {
+	return std::nextafter(std::uniform_real_distribution<float>(0.0f, 1.0f)(randomNumberEngine()), INFINITY) <= std::nextafter(prob,INFINITY);
+}
+
 // TODO 3.3e: Mutate a given tour, swapping cities randomly based on probability.
 // Hint: Use suitable distribution funcions. Note the value ranges of these functions.
 // If necessary, you should also familiarize yourself with std::nextafter.
-void mutate(Tour& tour)
-{
+void mutate(Tour& tour) {
 	constexpr float mutationProbability = 0.02F; // x% probability per city in a tour to get mutated
+	
+	for (int i = 0; i < N; i++) {
+		if (rand_bool_with_prob(mutationProbability)) {
+			int random = std::uniform_int_distribution<int>(0, N-2)(randomNumberEngine());
+			if (random == i)
+				random = N-1;
+			std::swap(tour.at(i), tour.at(random));
+		}
+	}
 }
 
 // fitness function based on tour length: the shorter, the better
@@ -221,6 +296,10 @@ std::pair<int, int> evolution(std::vector<Tour>& tours)
 
 	// TODO 3.3e: Mutate all other tours (ignore two best trips and the former worst trip (replaced)). Use the
 	// mutate method.
+
+	for (int i = 2; i < tours.size()-1; i++) {
+		mutate(tours[fitness[i].second]);
+	}
 
 	return statistics;
 }

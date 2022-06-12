@@ -163,9 +163,16 @@ void importRoutesData(const std::string& path, std::map<int, AirportInfo>& airpo
 
 // TODO 3.2a - remove all routes from AirportInfo::routes with at least one stop (so that only direct
 // flights remain). Use std::remove_if().
-void removeNonDirectFlights(std::map<int, AirportInfo>& airportInfo)
-{
+void removeNonDirectFlights(std::map<int, AirportInfo>& airportInfo) {
 	std::cout << "Remove non-direct flights (i.e., at least one stop)" << std::endl;
+
+	for (auto& airportpair : airportInfo){
+		airportpair.second.routes.erase(std::remove_if(airportpair.second.routes.begin(),airportpair.second.routes.end(),
+		[&](const std::pair<int,int>& elem){
+			return (elem.second > 1);
+		 }
+		), airportpair.second.routes.end());
+	}
 }
 
 // TODO 3.2b - For each route in AirportInfo::routes, calculate the distance between start and destination.
@@ -173,6 +180,16 @@ void removeNonDirectFlights(std::map<int, AirportInfo>& airportInfo)
 void calculateDistancePerRoute(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate distance for each route" << std::endl;
+
+	for (auto& airportpair : airportInfo) {
+		std::transform(airportpair.second.routes.begin(), airportpair.second.routes.end(), std::back_inserter(airportpair.second.routeLengths),
+			[&](const std::pair<int, int>& elem) {
+				std::cout << "Calculating distance for route " << airportpair.first << " to " <<  elem.first<< std::endl;
+				return calculateDistanceBetween(airportpair.second.pos, airportInfo.at(elem.first).pos);
+			});
+	}
+
+	std::cerr << "Bin da" << std::endl;
 }
 
 // TODO 3.2c - Based on AirportInfo::m_routeLengths, calculate for each airport the average distance of
@@ -180,6 +197,11 @@ void calculateDistancePerRoute(std::map<int, AirportInfo>& airportInfo)
 void calculateAverageRouteDistances(std::map<int, AirportInfo>& airportInfo)
 {
 	std::cout << "Calculate average distance for each source airport" << std::endl;
+	for (auto& airportpair : airportInfo){
+		auto avgCalc = [&](double a, double b){return a+(b/airportpair.second.routeLengths.size());};
+		airportpair.second.averageRouteLength = std::accumulate(airportpair.second.routeLengths.begin(), 
+		airportpair.second.routeLengths.end(), 0.0, avgCalc);
+	}
 }
 
 void printResults(std::map<int, AirportInfo>& airportInfo)
