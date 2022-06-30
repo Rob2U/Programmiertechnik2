@@ -2,6 +2,7 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <string>
 
 class TowerOfHanoi
 {
