@@ -58,16 +58,16 @@ private:
         //calculate basic construction
 
         //calculate string for stack a
-		line = 8 - line;
+		line = 10 - line;
         int size_a = towers[tower].second.size();
         if (size_a <= line) {
-            for (int j = 0; j < 20; j++) {
-                line_a += (j%20==10) ? "|" : " ";
+            for (int j = 0; j < 30; j++) {
+                line_a += (j%30==15) ? "|" : " ";
             }
         }
         else {
-            for (int j = 0; j < 20; j++) {
-                if (j > 20/2 + towers[tower].second.at(line) ||  j  < 20/2 - towers[tower].second.at(line)) {
+            for (int j = 0; j < 30; j++) {
+                if (j > 30/2 + towers[tower].second.at(line) ||  j  < 30/2 - towers[tower].second.at(line)) {
                     line_a += " ";
                 }
                 else {
@@ -94,10 +94,15 @@ private:
 #else
         std::system("clear");
 #endif
-        for (int i = 0; i <= 8; i++){
+        for (int i = 0; i <= 10; i++){
 
             std::string line_a = "";
             //calculate basic construction
+            std::string placeholder = "";
+			for (int i = 0; i < 93; i++){
+				placeholder += (i%31==15) ? "|" : " ";
+			}
+			std::cout << placeholder << std::endl;
 
             //calculate string for stack a
             std::string line = generatelinefortower(0, i);
@@ -106,20 +111,16 @@ private:
             std::cout << line << std::endl;
 			
 
-            std::string placeholder = "";
-			for (int i = 0; i < 63; i++){
-				placeholder += (i%21==10) ? "|" : " ";
-			}
-			std::cout << placeholder << std::endl;
+            
         }
 		std::string base = "";
-		for (int i = 0; i < 62; i++){
-			base += (i%21==0) ? " " : "_";
+		for (int i = 0; i < 92; i++){
+			base += (i%31==0) ? " " : "_";
 		}
         std::cout << base << std::endl << base << std::endl;
 		base = "";
-		for (int i = 0; i < 62; i++){
-			base += (i%21==10) ? std::string({char(i/21 + 65)})  : ((i%21==0) ? " " : "_");
+		for (int i = 0; i < 92; i++){
+			base += (i%31==15) ? std::string({char(i/31 + 65)})  : ((i%31==0) ? " " : "_");
 		}
 		std::cout << base << std::endl;
     }
@@ -132,7 +133,7 @@ private:
 
 int main()
 {
-    constexpr int ItemCount = 8;
+    constexpr int ItemCount = 10;
     TowerOfHanoi toh(ItemCount);
     toh.runSimulation();
 
