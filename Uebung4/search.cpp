@@ -82,6 +82,12 @@ RoutesData importRoutesData(const std::string& path)
 int linearSearch(int destID, const std::vector<Route>& routes, long long& numLookups)
 {
 	int numRoutes = 0;
+	for (int i = 0; i < routes.size(); i++) {
+		if (routes.at(i).destinationId == destID) {
+			numRoutes++;
+		}
+		numLookups++;
+	}
 
 	return numRoutes;
 }
@@ -93,6 +99,24 @@ std::pair<long long, long long> evaluateLinearSearch(const RoutesData& routesDat
 {
 	long long numLookups = 0;
 	long long duration = 0;
+	
+	//min und max DestID finden und anhand diesen suchen, statt destIDs aus Vektor nehmen für Suche (soll so gemacht werden (siehe Forum))
+	int minDestID = std::numeric_limits<int>::max();
+	int maxDestID = std::numeric_limits<int>::min();
+	for (int i = 0; i < routesData.routes.size(); i++) {
+		minDestID = std::min(minDestID, routesData.routes.at(i).destinationId);
+		maxDestID = std::max(maxDestID, routesData.routes.at(i).destinationId);
+	}
+
+	//Zeitmessung + Lookups zählen für alle destIDs zwischen min und maxDestID
+	auto start = std::chrono::steady_clock::now();
+
+	for (int i = minDestID; i <= maxDestID; i++) {
+		linearSearch(i, routesData.routes, numLookups);
+	}
+
+	auto end = std::chrono::steady_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
 
 	return std::make_pair(numLookups, duration);
 }
@@ -101,6 +125,35 @@ std::pair<long long, long long> evaluateLinearSearch(const RoutesData& routesDat
 // number of lookups. The vector should have been sorted before calling this function.
 int binarySearch(int destID, const std::vector<Route>& routes, long long& numLookups)
 {
+	int numRoutes = 0;
+	int leftBorder = 0;
+	int rightBorder = routes.size() - 1;
+
+	while(leftBorder <= rightBorder) {
+		int position = (leftBorder + rightBorder) / 2;
+		if(routes.at(position).destinationId == destID) {
+			int pos = position;
+			while (position < routes.size() && routes.at(position).destinationId == destID){
+				numRoutes++;
+				numLookups++;
+				position++;
+			}
+			while (pos > 0 && routes.at(pos).destinationId == destID){
+				numRoutes++;
+				numLookups++;
+				pos--;
+			}
+
+			return numRoutes;
+		}
+		if(routes.at(position).destinationId < destID) {
+			leftBorder = position + 1;
+		} else {
+			rightBorder = position - 1;
+		}
+		numLookups++;
+	}
+
 	return 0;
 }
 
@@ -112,6 +165,25 @@ std::pair<long long, long long> evaluateBinarySearch(RoutesData& routesData)
 {
 	long long numLookups = 0;
 	long long duration = 0;
+
+	//min und max DestID finden und anhand diesen suchen, statt destIDs aus Vektor nehmen für Suche (soll so gemacht werden (siehe Forum))
+	int minDestID = std::numeric_limits<int>::max();
+	int maxDestID = std::numeric_limits<int>::min();
+	for (int i = 0; i < routesData.routes.size(); i++) {
+		minDestID = std::min(minDestID, routesData.routes.at(i).destinationId);
+		maxDestID = std::max(maxDestID, routesData.routes.at(i).destinationId);
+	}
+	//Daten sortieren (Voraussetzung für binarySearch)
+	std::sort(routesData.routes.begin(), routesData.routes.end());
+	//Zeitmessung + Lookups zählen für alle destIDs zwischen min und maxDestID
+	auto start = std::chrono::steady_clock::now();
+
+	for (int i = minDestID; i <= maxDestID; i++) {
+		binarySearch(i, routesData.routes, numLookups);
+	}
+	
+	auto end = std::chrono::steady_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
 
 	return std::make_pair(numLookups, duration);
 }
